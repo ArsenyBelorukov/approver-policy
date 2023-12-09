@@ -74,10 +74,18 @@ func SelectorIssuerRef(_ context.Context, cr *cmapi.CertificateRequest, policies
 		if issRefSel.Name != nil && !util.WildcardMatches(*issRefSel.Name, issRef.Name) {
 			continue
 		}
-		if issRefSel.Kind != nil && !util.WildcardMatches(*issRefSel.Kind, issRef.Kind) {
+		issRefKind := issRef.Kind
+		if issRefKind == "" {
+			issRefKind = "Issuer"
+		}
+		if issRefSel.Kind != nil && !util.WildcardMatches(*issRefSel.Kind, issRefKind) {
 			continue
 		}
-		if issRefSel.Group != nil && !util.WildcardMatches(*issRefSel.Group, issRef.Group) {
+		issRefGroup := issRef.Group
+		if issRefGroup == "" {
+			issRefGroup = "cert-manager.io"
+		}
+		if issRefSel.Group != nil && !util.WildcardMatches(*issRefSel.Group, issRefGroup) {
 			continue
 		}
 		matchingPolicies = append(matchingPolicies, policy)
